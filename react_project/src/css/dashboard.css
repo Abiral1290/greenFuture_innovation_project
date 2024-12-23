@@ -1,0 +1,177 @@
+/* Reset some default styling for better consistency */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0f0f0;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  padding: 20px;
+  background-color: #f7f7f7;
+}
+
+.navbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2575fc;
+  padding: 15px 20px;
+  color: white;
+  position: relative;
+  top: 0;
+}
+
+.navbar-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.logout-btn {
+  background-color: #ff6f61;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: #ff3d2a;
+}
+
+/* Form Container */
+.form-container {
+  background: white;
+  width: 100%;
+  max-width: 500px;
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.input-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.input-group label {
+  font-size: 14px;
+  color: #333;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+  transition: border 0.3s ease;
+}
+
+.input-group input:focus {
+  border-color: #2575fc;
+  outline: none;
+}
+
+/* Submit Button */
+button[type='submit'] {
+  background-color: #2575fc;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+button[type='submit']:disabled {
+  background-color: #9e9e9e;
+  cursor: not-allowed;
+}
+
+button[type='submit']:enabled:hover {
+  background-color: #6a11cb;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-container {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
+  width: 400px;
+}
+
+.modal-container h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.modal-container p {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.modal-container button {
+  background-color: #2575fc;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modal-container button:hover {
+  background-color: #6a11cb;
+}
+
+@media (max-width: 768px) {
+  .form-container {
+    width: 90%;
+  }
+
+  .navbar-title {
+    font-size: 20px;
+  }
+
+  .logout-btn {
+    font-size: 14px;
+  }
+
+  button[type='submit'] {
+    font-size: 16px;
+  }
+}
