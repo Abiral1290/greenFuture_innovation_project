@@ -76,7 +76,7 @@ const handleSubmit = async (e) => {
   setIsSubmitting(true); // Start submission state
   const userEmail = localStorage.getItem('userEmail');
 
-  console.log('Email gjhghjgj:', userEmail.value);
+  console.log('Email gjhghjgj:', userEmail);
   try {
 
     const response = await axios.post('http://localhost:3001/ideas', {

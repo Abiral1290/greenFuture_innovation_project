@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const IdeaConfirm = require('./server/ideasConfirm'); // Adjust the path if needed
 const Idea = require('./server/ideasSubmit');// Import the Idea model
 
 
@@ -176,22 +177,27 @@ app.get('/confirmidea', async (req, res) => {
     }
   });
 
+
+
   app.post('/confirmidea', async (req, res) => {
     const { idea, email } = req.body;
-
-    console.log(email);
+  
     if (!idea || !email) {
       return res.status(400).json({ message: 'Idea and Submitted By are required' });
     }
   
+    console.log('Incoming request data:', req.body);
+  
     try {
-      const newIdea = new IdeaConfirm({ idea, submittedBy });
+      const newIdea = new IdeaConfirm({ idea, email });
       await newIdea.save();
       res.status(201).json(newIdea);
     } catch (error) {
+      console.error('Error saving idea:', error); // Log detailed error
       res.status(500).json({ message: 'Error adding idea', error });
     }
   });
+  
 
 
   app.delete('/ideas/:id', async (req, res) => {

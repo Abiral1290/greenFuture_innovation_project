@@ -1,12 +1,11 @@
-const mongoose = require('mongoose')
-
+const mongoose = require('mongoose');
 
 const ideaConfirmSchema = new mongoose.Schema({
-    idea: { type: String, required: true },
-    submittedBy: { type: String, required: true, unique: true },
-    vote: { type: int,  },
- 
-  });
-  
-  const IdeaConfirm =mongoose.model('Idea', ideaConfirmSchema);
-  module.exports = IdeaConfirm
+  idea: { type: String, required: true },
+  email: { type: String, required: true }, // Match 'email' field from frontend
+  vote: { type: Number, default: 0 }, // Optional field with default value
+});
+
+
+const IdeaConfirm = mongoose.model('IdeaConfirm', ideaConfirmSchema);
+module.exports = IdeaConfirm;

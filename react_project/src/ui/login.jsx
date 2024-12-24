@@ -1,5 +1,6 @@
 import '../css/LoginPage.css'; // Create a CSS file for styling
 import { useNavigate } from 'react-router-dom'; 
+import AlertDialog from '../ui/constant/alertDialog';
 
 // LoginPage.js
 import React, { useState, useEffect } from 'react';  // <-- Add useEffect import here
@@ -10,7 +11,12 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false); // Track submission status
   const navigate = useNavigate();
+  const [alertMessage, setAlertMessage] = useState(null);
+  
 
+  const handleCloseAlert = () => {
+    setAlertMessage(false); // Close the alert dialog
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -30,6 +36,10 @@ const LoginPage = () => {
       const data = await response.json();
   
       if (response.ok) {
+
+
+       // alert('Login SucessFully' );
+        setAlertMessage('Login SucessFully');
         localStorage.setItem('userEmail', email)
         // Handle successful login (e.g., store token in localStorage)
         console.log('Login successful:', data);
@@ -41,7 +51,7 @@ const LoginPage = () => {
       }
     } catch (error) {
       console.error('Login failed:', error);
-      alert('Login failed. Please try again later.');
+    //  alert('Login failed. Please try again later.');
     } finally {
       setIsSubmitting(false); // Reset submitting state
     }
@@ -80,6 +90,9 @@ const LoginPage = () => {
         <button type="submit" disabled={isSubmitting} className="login-btn">Login</button>
       </form>
       <button onClick={() => navigate('/signup')} className="signup-btn">Sign Up</button>
+      {alertMessage && (
+        <AlertDialog message={alertMessage} onClose={handleCloseAlert} />
+      )}
     </div>
   );
 };

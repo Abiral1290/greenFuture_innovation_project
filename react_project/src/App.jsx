@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes,
 import LoginPage from './ui/login';
 import Dashboard from './ui/dashboard';
 import Ideas from './ui/ideasList';
+import IdeasConfirm from './ui/ideasConfirm';
 
  
 
@@ -25,6 +26,8 @@ function App() {
          element={<Dashboard />} />
          <Route path="/ideasList"
          element={<Ideas/>} />
+          <Route path="/ideasConfirmedList"
+         element={<IdeasConfirm/>} />
       </Routes>
     </div>
       

@@ -4,7 +4,7 @@ import axios from 'axios';
 import AlertDialog from '../ui/constant/alertDialog';
 
 
-const Ideas = () => {
+const IdeasConfirm = () => {
   const [ideas, setIdeas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -18,7 +18,7 @@ const Ideas = () => {
   useEffect(() => {
     const fetchIdeas = async () => {
       try {
-        const response = await fetch('http://localhost:3001/ideas');
+        const response = await fetch('http://localhost:3001/confirmidea');
         if (!response.ok) {
           throw new Error('Failed to fetch ideas');
         }
@@ -77,23 +77,7 @@ const Ideas = () => {
   
   
 
-  // Handle idea deletion
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this idea?')) {
-      console.log(id);
-      try {
-        const response = await fetch(`http://localhost:3001/ideas/${id}`, {
-          method: 'DELETE',
-        });
-        if (!response.ok) {
-          throw new Error('Failed to delete the idea');
-        }
-        setIdeas(ideas.filter((idea) => idea._id !== id)); // Update the state
-      } catch (err) {
-        setError(err.message);
-      }
-    }
-  };
+ 
 
   if (loading) return <div>Loading ideas...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -118,13 +102,7 @@ const Ideas = () => {
                   onClick={(e) => handleConfirm(e,idea._id)}
                   disabled={isSubmitting}
                 >
-                  Confirm
-                </button>
-                <button
-                  className="delete-btn"
-                  onClick={() => handleDelete(idea._id)}
-                >
-                  Delete
+                  Vote
                 </button>
               </div>
             </div>

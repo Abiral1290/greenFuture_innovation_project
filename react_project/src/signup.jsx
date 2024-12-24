@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import './css/SignUpForm.css';  // Importing the CSS
 import { useNavigate } from 'react-router-dom'; 
 import axios from 'axios';
-import { MY_Email } from './ui/constant/constants';
 
 
 
@@ -30,9 +29,9 @@ function SignUpForm() {
 
         console.log('Signup successful:', result.data);
         setSuccessMessage('Signup Successful! 🎉');
-        localStorage.setItem('userEmail', email)
+        
         setFormData({ name: '', email: '', password: '', role: 'employee' }); // Reset form data
-        navigate('/');
+        navigate('/dashboard');
       })
       .catch((err) => {
         console.error('Error during signup:', err.response ? err.response.data : err.message);
