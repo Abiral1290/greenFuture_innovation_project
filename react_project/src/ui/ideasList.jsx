@@ -40,14 +40,15 @@ const Ideas = () => {
   
     setIsSubmitting(true); // Start submission state
 
-
+    
     console.log(localStorage.getItem('userEmail'));
     try {
       // Make sure to use the correct `ideaId` here
       const response = await axios.post('http://localhost:3001/confirmidea', {
         idea: ideas.find((idea) => idea._id === ideaId)?.idea, // Find the idea using its ID
-        email: "cdfsdfs@gmail.com",
+        email: ideas.find((idea) => idea._id === ideaId)?.email,
       });
+       handleConfirmStatus(ideas.find((idea) => idea._id === ideaId)?._id);
       setMessage('Idea submitted successfully!');
       setAlertMessage('Idea submitted successfully!');
       console.log('Response received:', response); // Debug log for response
@@ -76,7 +77,31 @@ const Ideas = () => {
   };
   
   
+  const handleCloseAlert = () => {
+    setAlertMessage(null);
+  };
+  
 
+  const handleConfirmStatus = async (ideaId) => {
+    setIsSubmitting(true); // Start submitting state
+
+    console.log("idea Status id", ideaId)
+    try {
+      const response = await axios.patch(`http://localhost:3001/ideas/${ideaId}`, {
+        ideaConfirmStatus: true, // Set ideaConfirmStatus to true
+      });
+
+      if (response.status === 200) {
+        
+      }
+    } catch (error) {
+      setAlertMessage('Error confirming idea');
+      console.error('Error confirming idea:', error);
+    } finally {
+      setIsSubmitting(false); // End submitting state
+    }
+  };
+  
   // Handle idea deletion
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this idea?')) {
@@ -89,6 +114,7 @@ const Ideas = () => {
           throw new Error('Failed to delete the idea');
         }
         setIdeas(ideas.filter((idea) => idea._id !== id)); // Update the state
+        alert('Idea deleted successfully!');
       } catch (err) {
         setError(err.message);
       }
@@ -112,25 +138,31 @@ const Ideas = () => {
                 <p><strong>Submitted By:</strong> {idea.email}</p>
                 <p><small>Submitted At: {new Date(idea.createdAt).toLocaleString()}</small></p>
               </div>
-              <div className="idea-buttons">
-                <button
-                  className="confirm-btn"
-                  onClick={(e) => handleConfirm(e,idea._id)}
-                  disabled={isSubmitting}
-                >
-                  Confirm
-                </button>
-                <button
-                  className="delete-btn"
-                  onClick={() => handleDelete(idea._id)}
-                >
-                  Delete
-                </button>
-              </div>
+              {idea.ideaConfirmStatus !== true && (
+                 <div className="idea-buttons">
+                 <button
+                   className="confirm-btn"
+                   onClick={(e) => handleConfirm(e,idea._id)}
+                   disabled={isSubmitting}
+                 >
+                   Confirm
+                 </button>
+               <button
+                 className="delete-btn"
+                 onClick={() => handleDelete(idea._id)}
+               >
+                 Delete
+               </button>
+             
+ 
+               </div>
+              )}
+             
             </div>
           ))}
            {alertMessage && (
-        <AlertDialog message={alertMessage} onClose={handleCloseAlert} />
+        <AlertDialog message=
+        {alertMessage} onClose={handleCloseAlert} />
       )}
         </div>
       )}

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import '../css/Ideas.css';
+import '../css/IdeasConfirm.css';
 import axios from 'axios';
 import AlertDialog from '../ui/constant/alertDialog';
-
 
 const IdeasConfirm = () => {
   const [ideas, setIdeas] = useState([]);
@@ -10,74 +9,82 @@ const IdeasConfirm = () => {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const emails = localStorage.getItem('userEmail');
   const [alertMessage, setAlertMessage] = useState(null);
-
+  const [selectedIdea, setSelectedIdea] = useState(null);
 
   // Fetch ideas from the API
-  useEffect(() => {
-    const fetchIdeas = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/confirmidea');
-        if (!response.ok) {
-          throw new Error('Failed to fetch ideas');
-        }
-        const data = await response.json();
-        setIdeas(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+  const fetchIdeas = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/confirmidea');
+      if (!response.ok) {
+        throw new Error('Failed to fetch ideas');
       }
-    };
+      const data = await response.json();
+      setIdeas(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchIdeas();
   }, []);
 
-  // Handle idea confirmation
-  const handleConfirm = async (e, ideaId) => {
-    e.preventDefault(); // This prevents the default behavior of the event
-  
-    setIsSubmitting(true); // Start submission state
+  // Handle vote confirmation
+  const handleVote = async (e, idea) => {
+    e.preventDefault();
+    setIsSubmitting(true);
 
+    console.log('my id', idea._id)
 
-    console.log(localStorage.getItem('userEmail'));
     try {
-      // Make sure to use the correct `ideaId` here
-      const response = await axios.post('http://localhost:3001/confirmidea', {
-        idea: ideas.find((idea) => idea._id === ideaId)?.idea, // Find the idea using its ID
-        email: "cdfsdfs@gmail.com",
+      const response = await axios.patch(`http://localhost:3001/confirmidea/${idea._id}`, {
+        voteIncrement: 1, // Increment the vote count by 1
       });
-      setMessage('Idea submitted successfully!');
-      setAlertMessage('Idea submitted successfully!');
-      console.log('Response received:', response); // Debug log for response
-  
-      if (response.status === 201) {
-        const data = response.data;
-        setMessage(`Idea submitted successfully! ID: ${data._id}`);
+      if (response.status === 200) {
+        handleVoteStatus(idea_id)
+        setSelectedIdea(idea); // Set the selected idea for the alert dialog
+        setAlertMessage('Vote recorded successfully!');
+        // Refresh the idea list to update vote counts
+        fetchIdeas();
       } else {
-        setAlertMessage('Error submitting idea.');
-        setMessage('Error submitting idea.');
-        throw new Error('Failed to submit idea');
+        throw new Error('Failed to update vote');
       }
     } catch (error) {
-      setAlertMessage('Error submitting idea.');
-      console.error('Error submitting idea:', error);
-  
-      const errorMessage = error.response
-        ? error.response.data.message || 'Unexpected error'
-        : error.message;
-  
-      alert('Signup failed: ' + errorMessage);
-      setMessage(`Error: ${errorMessage}`);
+      console.error('Error updating vote:', error);
+      setAlertMessage('Error updating vote.');
     } finally {
-      setIsSubmitting(false); // End submission state
+      setIsSubmitting(false);
     }
   };
-  
-  
 
- 
+
+  const handleVoteStatus = async (ideaId) => {
+    setIsSubmitting(true); // Start submitting state
+
+    console.log("idea Status id", ideaId)
+    try {
+      const response = await axios.patch(`http://localhost:3001/register/${ideaId}`, {
+        ideaConfirmStatus: true, // Set ideaConfirmStatus to true
+      });
+
+      if (response.status === 200) {
+        
+      }
+    } catch (error) {
+      setAlertMessage('Error confirming idea');
+      console.error('Error confirming idea:', error);
+    } finally {
+      setIsSubmitting(false); // End submitting state
+    }
+  };
+
+  const handleCloseAlert = () => {
+    setAlertMessage(null);
+    setSelectedIdea(null);
+  };
 
   if (loading) return <div>Loading ideas...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -98,8 +105,8 @@ const IdeasConfirm = () => {
               </div>
               <div className="idea-buttons">
                 <button
-                  className="confirm-btn"
-                  onClick={(e) => handleConfirm(e,idea._id)}
+                  className="vote-btn"
+                  onClick={(e) => handleVote(e, idea)}
                   disabled={isSubmitting}
                 >
                   Vote
@@ -107,13 +114,23 @@ const IdeasConfirm = () => {
               </div>
             </div>
           ))}
-           {alertMessage && (
-        <AlertDialog message={alertMessage} onClose={handleCloseAlert} />
-      )}
         </div>
+      )}
+      {alertMessage && selectedIdea && (
+        <AlertDialog
+          message={
+            <div>
+              <p><strong>{alertMessage}</strong></p>
+              <p><strong>Idea:</strong> {selectedIdea.idea}</p>
+              <p><strong>Submitted By:</strong> {selectedIdea.email}</p>
+              <p><small>Submitted At: {new Date(selectedIdea.createdAt).toLocaleString()}</small></p>
+            </div>
+          }
+          onClose={handleCloseAlert}
+        />
       )}
     </div>
   );
 };
 
-export default Ideas;
+export default IdeasConfirm;

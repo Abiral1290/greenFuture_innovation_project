@@ -24,10 +24,11 @@ mongoose.connect("mongodb://127.0.0.1:27017/reactProjectDB",
 app.use(express.json());
 
 const UserSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  password: String,
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
   role: { type: String, default: 'employee' },
+  voted: { type: Boolean, required: true }
 });
 
 UserSchema.methods.comparePassword = async function (password) {
@@ -43,38 +44,32 @@ const User = mongoose.model('User', UserSchema);
 
 
 app.post('/ideas', async (req, res) => {
-    const { idea, email } = req.body;
-  
-    // Input validation
-    if (!idea || !email) {
-      return res.status(400).json
-      ({ message: 'Idea and submittedBy are required.' });
-    }
+  const { idea, email, ideaConfirmStatus } = req.body;
 
+  // Input validation
+  if (!idea || !email) {
+    return res.status(400).json({ message: 'Idea and submittedBy are required.' });
+  }
+ 
+  const existingIdea = await Idea.findOne({ email });
+  if (existingIdea) {
+    console.log('Email already in use:', email);
+    return res.status(400).json({ message: 'Email is already in use.' });
+  }
 
+  try {
+    const newIdea = new Idea({ idea, email, ideaConfirmStatus });
+    await newIdea.save();
+    res.status(201).json({
+      message: 'Idea submitted successfully!',
+      idea: newIdea,
+    });
+  } catch (error) {
+    console.error('Error submitting idea:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
 
-    const existingIdea = await Idea.
-    findOne({ email });
-    if (existingIdea) {
-      
-      console.log('Email already in use:', email);
-      return res.status(400).json({ message: 'Email is already in use.' });
-    }
-  
-    try {
-      const newIdea = new Idea({ idea, 
-        email });
-      await newIdea.save();
-      res.status(201).json({
-        message: 'Idea submitted successfully!',
-        idea: newIdea,
-      });
-    //   res.s.;tatus(201).json({ message: 'Idea submitted successfully!', idea: newIdea });
-    } catch (error) {
-      console.error('Error submitting idea:', error);
-      res.status(500).json({ message: 'Server error', error: error.message });
-    }
-  });
 
   app.get('/ideas', async (req, res) => {
     try {
@@ -113,9 +108,6 @@ app.post('/login', async (req, res) => {
     }
   });
 
-
- // const jwt = require('jsonwebtoken');
-
 const protect = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
 
@@ -137,7 +129,7 @@ app.get('/dashboard', protect, (req, res) => {
   });
   
 app.post('/register', async (req, res) => {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, voted } = req.body;
   
     // Input validation
     if (!name || !email || !password) {
@@ -153,15 +145,12 @@ app.post('/register', async (req, res) => {
         console.log('Email already in use:', email);
         return res.status(400).json({ message: 'Email is already in use.' });
       }
-  
       // Create new user
-      const user = new User({ name, email, password, role });
+      const user = new User({ name, email, password, role, voted });
       await user.save();
       console.log('User registered successfully:', user);
       res.status(201).json({ message: 'User registered successfully!' });
       console.log(res.status)
-    
-  
     } catch (error) {
       console.error('Error during registration:', error);
       res.status(500).json({ message: 'Server error', error: error.message });
@@ -176,8 +165,6 @@ app.get('/confirmidea', async (req, res) => {
       res.status(500).json({ message: 'Error fetching ideas', error });
     }
   });
-
-
 
   app.post('/confirmidea', async (req, res) => {
     const { idea, email } = req.body;
@@ -198,19 +185,79 @@ app.get('/confirmidea', async (req, res) => {
     }
   });
   
-
+  app.patch('/ideas/:id', async (req, res) => {
+    const { id } = req.params;  // Get the _id of the idea
+    const { ideaConfirmStatus } = req.body;  // Get the ideaConfirmStatus from the request body
+  
+    // Validate the input
+    if (typeof ideaConfirmStatus !== 'boolean') {
+      return res.status(400).json({ message: 'Invalid ideaConfirmStatus. It should be a boolean.' });
+    }
+  
+    try {
+      // Find and update the idea with the new ideaConfirmStatus
+      const updatedIdea = await Idea.findByIdAndUpdate(
+        id,
+        { ideaConfirmStatus },  // Update ideaConfirmStatus to the new value
+        { new: true }           // Return the updated document
+      );
+  
+      if (!updatedIdea) {
+        return res.status(404).json({ message: 'Idea not found.' });
+      }
+      
+      await updatedIdea.save();
+      res.status(200).json({ message: 'Idea status updated', idea: updatedIdea });
+    } catch (error) {
+      console.error('Error updating idea:', error);
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  });
+  
+  app.patch('/confirmidea/:id', async (req, res) => {
+    const { id } = req.params;
+    const { voteIncrement } = req.body; // Allows flexibility for additional fields in the future
+  
+    console.log('vote increment', voteIncrement);
+    if (!voteIncrement || typeof voteIncrement !== 'number') {
+      return res.status(400).json({ message: 'Invalid vote increment value' });
+    }
+  
+    try {
+      // Find the idea by ID and update the vote count
+      const updatedIdea = await IdeaConfirm.findByIdAndUpdate(
+        id,
+        { $inc: { vote: voteIncrement } }, // Increment the vote field
+        { new: true } // Return the updated document
+      );
+  
+      if (!updatedIdea) {
+        return res.status(404).json({ message: 'Idea not found' });
+      }
+  
+      res.status(200).json(updatedIdea); // Send the updated idea back
+    } catch (error) {
+      console.error('Error updating idea:', error);
+      res.status(500).json({ message: 'Error updating idea', error });
+    }
+  });
+  
 
   app.delete('/ideas/:id', async (req, res) => {
     const { id } = req.params;
   
+    if (!id) {
+      return res.status(400).json({ message: 'Idea ID is required.' });
+    }
+  
+
     try {
       const idea = await Idea.findByIdAndDelete(id);
   
       if (!idea) {
         return res.status(404).json({ message: 'Idea not found' });
       }
-
-      idea.confirmed = true;  // Example of confirming an idea
+       // idea.confirmed = true;  // Example of confirming an idea
     await idea.save();
   
       res.status(200).json({ message: 'Idea deleted successfully' });

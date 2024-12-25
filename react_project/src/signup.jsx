@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
-import './css/SignUpForm.css';  // Importing the CSS
-import { useNavigate } from 'react-router-dom'; 
+import './css/SignUpForm.css'; // Importing the CSS
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
-
+import AlertDialog from './ui/constant/alertDialog'; // Import the AlertDialog component
 
 function SignUpForm() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    role: 'employee', // Default role
+    role: 'employee',
+    voted: false // Default role
   });
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState('');
+  const [showDialog, setShowDialog] = useState(false); // State for dialog visibility
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,14 +25,14 @@ function SignUpForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Submitting form data:', formData);
-    axios.post('http://localhost:3001/register', formData)
+    axios
+      .post('http://localhost:3001/register', formData)
       .then((result) => {
-
         console.log('Signup successful:', result.data);
+        localStorage.setItem('userEmail', email);
         setSuccessMessage('Signup Successful! 🎉');
-        
-        setFormData({ name: '', email: '', password: '', role: 'employee' }); // Reset form data
-        navigate('/dashboard');
+        setShowDialog(true); // Show the dialog
+        setFormData({ name: '', email: '', password: '', role: 'employee', voted: false }); // Reset form data
       })
       .catch((err) => {
         console.error('Error during signup:', err.response ? err.response.data : err.message);
@@ -39,12 +40,14 @@ function SignUpForm() {
       });
   };
 
-
+  const handleCloseDialog = () => {
+    setShowDialog(false); // Close the dialog
+    navigate('/dashboard'); // Navigate to the dashboard after closing the dialog
+  };
 
   return (
     <div className="signup-form">
       <h2>Sign Up</h2>
-      {successMessage && <p className="success-message">{successMessage}</p>}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">Name</label>
@@ -98,17 +101,19 @@ function SignUpForm() {
             <option value="moderator">Innovative Manager</option>
           </select>
         </div>
-        
-        <button onClick={
-          //navigate('/')
-           console.log()
-        }  type="submit" className="submit-button">
+
+        <button type="submit" className="submit-button">
           Sign Up
         </button>
-        
       </form>
-      
-      
+
+      {/* AlertDialog Component */}
+      {showDialog && (
+        <AlertDialog
+          message={<p>{successMessage}</p>}
+          onClose={handleCloseDialog}
+        />
+      )}
     </div>
   );
 }

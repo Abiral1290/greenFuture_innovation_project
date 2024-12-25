@@ -74,19 +74,19 @@ const Dashboard = () => {
 const handleSubmit = async (e) => {
   e.preventDefault();
   setIsSubmitting(true); // Start submission state
-  const userEmail = localStorage.getItem('userEmail');
-
-  console.log('Email gjhghjgj:', userEmail);
+   
   try {
 
     const response = await axios.post('http://localhost:3001/ideas', {
       idea: inputValue,  // Ensure correct data is sent
       email: emails,
+      ideaConfirmStatus: false
     });
 
     console.log('Response received:', response); // Debug log for response
 
     if (response.status === 201) {
+      alert('Idea submitted successfully!');
       const data = response.data;
       setMessage(`Idea submitted successfully! ID: ${data._id}`);
     } else {
@@ -113,6 +113,14 @@ const handleSubmit = async (e) => {
     navigate('/ideasList'); // Navigate to login page
     console.log('Idea');
   };
+
+
+  const handleIdeaNavigationVoteOnIdeas = () => {
+    // Logic for logging out, for now, we'll just log to the console
+    navigate('/ideasConfirmedList'); // Navigate to login page
+    console.log('Idea');
+  };
+
   const handleLogout = () => {
     // Logic for logging out, for now, we'll just log to the console
     navigate('/'); // Navigate to login page
@@ -130,7 +138,9 @@ const handleSubmit = async (e) => {
       <div className="navbar">
         <h3 className="navbar-title">Dashboard</h3>
         <button className="logout-btn" onClick={handleLogout}>Logout</button>
-        <button className="Ideas" onClick={handleIdeaNavigation}>Logout</button>
+        <button className="Ideas" onClick={handleIdeaNavigation}>Confirm Ideas</button>
+        <button className="IdeasConfirm" onClick={handleIdeaNavigationVoteOnIdeas}>Ideas to Vote</button>
+
       </div>
 
       <div className="form-container">
@@ -151,7 +161,6 @@ const handleSubmit = async (e) => {
           </button>
         </form>
       </div>
-
       {/* Render the custom AlertDialog if showModal is true */}
       {showModal && (
         <AlertDialog message={modalMessage} onClose={handleCloseModal} />
