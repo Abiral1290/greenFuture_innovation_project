@@ -17,8 +17,7 @@ body {
 
 /* Signup form container */
 .signup-form {
-  background: #fff;
-  background: url('D:/react_assignment/react_project/src/assets/greenfuture.jpg') no-repeat center center fixed; /* Background image */
+  background: #28a745;  /* Green background */
   border-radius: 8px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   width: 100%;
@@ -30,7 +29,7 @@ body {
 /* Heading styles */
 .signup-form h2 {
   margin-bottom: 20px;
-  color: #333;
+  color: #fff;  /* White text for contrast */
   font-size: 24px;
 }
 
@@ -67,8 +66,8 @@ body {
 }
 
 .form-group input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  border-color: #28a745;  /* Green focus border */
+  box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
 }
 
 .form-group input::placeholder {
@@ -79,7 +78,7 @@ body {
 .submit-button {
   width: 100%;
   padding: 12px;
-  background-color: #007bff;
+  background-color: #28a745;  /* Green button */
   color: white;
   border: none;
   border-radius: 5px;
@@ -89,13 +88,13 @@ body {
 }
 
 .submit-button:hover {
-  background-color: #0056b3;
+  background-color: #218838;  /* Darker green on hover */
 }
 
 /* Focus effect on submit button */
 .submit-button:focus {
   outline: none;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
 }
 
 /* Small screen responsiveness */
@@ -108,6 +107,7 @@ body {
     font-size: 16px;
   }
 }
+
 /* Dropdown styling to match the input fields */
 .form-group select {
   width: 100%;
@@ -120,6 +120,6 @@ body {
 }
 
 .form-group select:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  border-color: #28a745;  /* Green focus border */
+  box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
 }

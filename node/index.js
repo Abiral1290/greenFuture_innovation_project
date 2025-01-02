@@ -5,8 +5,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const IdeaConfirm = require('./server/ideasConfirm'); // Adjust the path if needed
 const Idea = require('./server/ideasSubmit');// Import the Idea model
-const admin = require('firebase-admin');
-const { Firestore } = require('@google-cloud/firestore');
 const Notification = require('./server/notification')
 
 //const firestore = new Firestore();
@@ -50,13 +48,9 @@ UserSchema.methods.comparePassword = async function (password) {
 const User = mongoose.model('User', UserSchema);
 
 
-const serviceAccount = require('./firebase.json'); // Replace with your service account file
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
 
-const firestore = admin.firestore();
+
 
 
 
