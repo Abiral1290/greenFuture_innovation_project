@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { FaBell } from 'react-icons/fa'; // Notification bell icon
 import '../css/notification.css';
 
-const Notifications = ({ email }) => {
+const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const emails = localStorage.getItem('userEmail');
+
 
   useEffect(() => {
     // Fetch notifications from the backend
     const fetchNotifications = async () => {
       try {
-        const response = await fetch(`/notifications/${email}`);
+        const response = await fetch(`http://localhost:3001/notifications/${emails}`);
         const data = await response.json();
         if (response.ok) {
           setNotifications(data);
@@ -25,7 +27,7 @@ const Notifications = ({ email }) => {
     };
 
     fetchNotifications();
-  }, [email]);
+  }, [emails]);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);

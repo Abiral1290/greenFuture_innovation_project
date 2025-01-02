@@ -12,7 +12,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
   const emails = localStorage.getItem('userEmail');
-  const role = localStorage.getItem('role'); // Retrieve the user's role from local storage
+  const role = localStorage.getItem('userrole'); // Retrieve the user's role from local storage
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,7 +70,7 @@ const Dashboard = () => {
         <button className="logout-btn" onClick={handleLogout}>Logout</button>
 
         {/* Render "Confirm Ideas" button only for employees */}
-        {role === 'employee' && (
+        {role === 'Regional Manager' && (
           <button className="Ideas" onClick={handleIdeaNavigation}>
             Confirm Ideas
           </button>
