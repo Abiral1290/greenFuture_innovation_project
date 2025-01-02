@@ -18,6 +18,7 @@ body {
 /* Signup form container */
 .signup-form {
   background: #fff;
+  background: url('D:/react_assignment/react_project/src/assets/greenfuture.jpg') no-repeat center center fixed; /* Background image */
   border-radius: 8px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   width: 100%;

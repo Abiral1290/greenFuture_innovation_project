@@ -1,184 +1,199 @@
-/* Reset default styling */
+/* Global styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Apply the full-page background image */
 html, body {
+  margin: 0;
+  padding: 0;
   height: 100%;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f0f0f0;
+  font-family: 'Arial', sans-serif;
+  background-image: url('D:/react_assignment/react_project/src/assets/greenfuture.jpg'); /* Replace with the correct path */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: #f0f8f5; /* Light text for better contrast */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
-body {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Dashboard Container */
 .dashboard-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 100vh;
-  width: 100%;
+  flex-grow: 1;
+  background-color: rgba(0, 0, 0, 0.4); /* Add a subtle overlay */
   padding: 20px;
-  background-color: #f7f7f7;
 }
 
+/* Navbar styling */
 .navbar {
-  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #2575fc;
-  padding: 15px 20px;
-  color: white;
+  width: 100%;
+  padding: 15px 30px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(44, 107, 54, 0.9); /* Green with transparency */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  z-index: 10;
 }
 
 .navbar-title {
-  font-size: 24px;
+  font-size: 2.2rem;
   font-weight: bold;
+  color: #f4fff1;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-.logout-btn {
-  background-color: #ff6f61;
+/* Buttons */
+.logout-btn,
+.Ideas,
+.IdeasConfirm {
+  background-color: #3B8740; /* Rich green for buttons */
   color: white;
-  padding: 8px 16px;
+  padding: 14px 22px;
+  font-size: 1rem;
   border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.logout-btn:hover {
-  background-color: #ff3d2a;
-}
-
-/* Form Container */
-.form-container {
-  background: white;
-  width: 100%;
-  max-width: 500px;
-  margin-top: 20px;
-  padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.logout-btn:hover,
+.Ideas:hover,
+.IdeasConfirm:hover {
+  background-color: #2C6B36;
+  transform: translateY(-2px); /* Adds a subtle pop effect */
+}
+
+.logout-btn:active,
+.Ideas:active,
+.IdeasConfirm:active {
+  transform: translateY(0);
+}
+
+/* Form container styling */
+.form-container {
+  max-width: 500px;
+  margin: 50px auto;
+  background-color: rgba(44, 107, 54, 0.8); /* Transparent green overlay */
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   text-align: center;
 }
 
-.input-group {
+h2 {
   margin-bottom: 20px;
-  text-align: left;
+  font-size: 1.8rem;
+  color: #ffffff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-.input-group label {
-  font-size: 14px;
+.input-group {
+  margin-bottom: 15px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #ffffff;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
   color: #333;
 }
 
-.input-group input {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  background-color: #f8f8f8;
-  transition: border 0.3s ease;
-}
-
-.input-group input:focus {
-  border-color: #2575fc;
+input[type="text"]:focus {
+  border-color: #3B8740; /* Green border on focus */
   outline: none;
 }
 
-/* Submit Button */
-button[type='submit'] {
-  background-color: #2575fc;
+/* Submit buttons */
+button {
+  background-color: #4CAF50;
   color: white;
-  padding: 12px 20px;
+  padding: 14px 28px;
+  font-size: 1rem;
   border: none;
-  border-radius: 8px;
-  font-size: 18px;
-  font-weight: bold;
   cursor: pointer;
-  width: 100%;
-  transition: background-color 0.3s ease;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.3);
 }
 
-button[type='submit']:disabled {
-  background-color: #9e9e9e;
+button:hover {
+  background-color: #3B8740;
+  transform: translateY(-2px);
+}
+
+button:disabled {
+  background-color: #8FBC8F;
   cursor: not-allowed;
 }
 
-button[type='submit']:enabled:hover {
-  background-color: #6a11cb;
-}
-
-/* Modal Styles */
+/* Modal styling */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Dark overlay */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 20;
 }
 
 .modal-container {
   background-color: white;
-  padding: 30px;
-  border-radius: 8px;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
-  width: 400px;
 }
 
 .modal-container h3 {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.modal-container p {
-  font-size: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  color: #333;
 }
 
 .modal-container button {
-  background-color: #2575fc;
-  color: white;
-  padding: 10px 20px;
+  background-color: #3B8740;
+  padding: 12px 24px;
+  font-size: 1rem;
+  border-radius: 6px;
   border: none;
-  border-radius: 8px;
   cursor: pointer;
 }
 
 .modal-container button:hover {
-  background-color: #6a11cb;
+  background-color: #2C6B36;
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
-  .form-container {
-    width: 90%;
+  .navbar {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
   }
 
   .navbar-title {
-    font-size: 20px;
+    font-size: 1.8rem;
   }
 
-  .logout-btn {
-    font-size: 14px;
+  .form-container {
+    width: 90%;
+    padding: 20px;
   }
 
-  button[type='submit'] {
-    font-size: 16px;
+  button {
+    padding: 12px 20px;
+    font-size: 0.9rem;
   }
 }

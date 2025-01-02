@@ -5,6 +5,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const IdeaConfirm = require('./server/ideasConfirm'); // Adjust the path if needed
 const Idea = require('./server/ideasSubmit');// Import the Idea model
+const admin = require('firebase-admin');
+const { Firestore } = require('@google-cloud/firestore');
+const Notification = require('./server/notification')
+
+//const firestore = new Firestore();
 
 
 const cors = require('cors');  // Optional, for handling CORS
@@ -22,6 +27,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/reactProjectDB",
 
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -39,7 +45,19 @@ UserSchema.methods.comparePassword = async function (password) {
     }
   };
 
+
+
 const User = mongoose.model('User', UserSchema);
+
+
+const serviceAccount = require('./firebase.json'); // Replace with your service account file
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+const firestore = admin.firestore();
+
 
 
 
@@ -71,6 +89,41 @@ app.post('/ideas', async (req, res) => {
 });
 
 
+
+
+app.post('/notifications', async (req, res) => {
+  console.log('Request received:', req.body);
+
+  const { email, message } = req.body;
+  if (!email || !message) {
+    console.log('Validation error: Missing email or message');
+    return res.status(400).json({ error: 'Email and message are required' });
+  }
+
+  try {
+    const notification = new Notification({ email, message });
+    const savedNotification = await notification.save();
+    console.log('Notification saved:', savedNotification);
+    res.status(201).json({ message: 'Notification created', notification: savedNotification });
+  } catch (error) {
+    console.error('Error saving notification:', error);
+    res.status(500).json({ error: 'Failed to create notification' });
+  }
+});
+
+
+app.get('/notifications/:email', async (req, res) => {
+  const { email } = req.params;
+
+  try {
+    const notifications = await Notification.find({ email });
+    res.status(200).json(notifications);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch notifications' });
+  }
+});
+
+
   app.get('/ideas', async (req, res) => {
     try {
       const ideas = await Idea.find().sort({ createdAt: -1 }); // Fetch ideas, sorted by most recent
@@ -81,32 +134,59 @@ app.post('/ideas', async (req, res) => {
     }
   });
 
-
-app.post('/login', async (req, res) => {
+   
+  app.post('/login', async (req, res) => {
     const { email, password } = req.body;
-  
+    console.log('Incoming request:', req.body); // Log the incoming request
+
     try {
-      // Find the user by email
-      const user = await User.findOne({ email });
-      if (!user) {
-        return res.status(400).json({ message: 'Invalid credentials' });
-      }
+        const user = await User.findOne({ email });
+        if (!user) {
+            console.error('User not found');
+            return res.status(400).json({ message: 'Invalid email or password' });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            console.error('Password mismatch');
+            return res.status(400).json({ message: 'Invalid email or password' });
+        }
+
+        const token = jwt.sign({ userId: user._id, role: user.role }, 'your_jwt_secret_key', { expiresIn: '1h' });
+        res.status(200).json({ message: 'Login successful', token, role: user.role });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+
+// app.post('/login', async (req, res) => {
+//     const { email, password } = req.body;
   
-      const hashedPassword = await bcrypt.hash(password, 10);
+//     try {
+//       // Find the user by email
+//       const user = await User.findOne({ email });
+//       if (!user) {
+//         return res.status(400).json({ message: 'Invalid credentials' });
+//       }
+  
+//       const hashedPassword = await bcrypt.hash(password, 10);
 
   
-      // Generate a JWT token
-      const token = jwt.sign({ userId: user._id, role: user.role }, 'your_jwt_secret_key', { expiresIn: '1h' });
+//       // Generate a JWT token
+//       const token = jwt.sign({ userId: user._id, role: user.role }, 'your_jwt_secret_key', { expiresIn: '1h' });
   
-      res.status(200).json({
-        message: 'Login successful',
-        token,  // Send the JWT token to the client
-      });
-    } catch (err) {
-      console.error('Login error:', err);
-      res.status(500).json({ message: 'Server error' });
-    }
-  });
+//       res.status(200).json({
+//         message: 'Login successful',
+//         token,  // Send the JWT token to the client
+//         role: user.role
+//       });
+//     } catch (err) {
+//       console.error('Login error:', err);
+//       res.status(500).json({ message: 'Server error' });
+//     }
+//   });
 
 const protect = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -139,6 +219,8 @@ app.post('/register', async (req, res) => {
   
     try {
       // Check if the email already exists in the database
+      const hashedPassword = await bcrypt.hash(password, 10);
+
       const existingUser = await User.
       findOne({ email });
       if (existingUser) {
@@ -146,7 +228,7 @@ app.post('/register', async (req, res) => {
         return res.status(400).json({ message: 'Email is already in use.' });
       }
       // Create new user
-      const user = new User({ name, email, password, role, voted });
+      const user = new User({ name, email, password: hashedPassword, role, voted });
       await user.save();
       console.log('User registered successfully:', user);
       res.status(201).json({ message: 'User registered successfully!' });
@@ -175,6 +257,13 @@ app.get('/confirmidea', async (req, res) => {
   
     console.log('Incoming request data:', req.body);
   
+    const message = {
+      notification: {
+        title: 'Idea Approved',
+        body: `Your idea titled "${idea.ideaTitle}" has been approved.`,
+      },
+      token: email,
+    };
     try {
       const newIdea = new IdeaConfirm({ idea, email });
       await newIdea.save();
@@ -184,6 +273,35 @@ app.get('/confirmidea', async (req, res) => {
       res.status(500).json({ message: 'Error adding idea', error });
     }
   });
+
+  app.patch('/register', async (req, res) => {
+    const { id } = req.params;  // Get the _id of the idea
+    const { voted } = req.body;  // Get the ideaConfirmStatus from the request body
+  
+    // Validate the input
+    if (typeof voted !== 'boolean') {
+      return res.status(400).json({ message: 'Invalid vote. It should be a boolean.' });
+    }
+  
+    try {
+      // Find and update the idea with the new ideaConfirmStatus
+      const updatedVote = await User.findByIdAndUpdate(
+        id,
+        { voted },  // Update ideaConfirmStatus to the new value
+        { new: true }           // Return the updated document
+      );
+  
+      if (!updatedVote) {
+        return res.status(404).json({ message: 'Idea not found.' });
+      }
+
+      await updatedVote.save();
+      res.status(200).json({ message: 'Idea status updated', idea: updatedIdea });
+    } catch (error) {
+      console.error('Error updating idea:', error);
+      res.status(500).json({ message: 'Server error', error: error.message });
+    }
+  }); 
   
   app.patch('/ideas/:id', async (req, res) => {
     const { id } = req.params;  // Get the _id of the idea
@@ -205,7 +323,7 @@ app.get('/confirmidea', async (req, res) => {
       if (!updatedIdea) {
         return res.status(404).json({ message: 'Idea not found.' });
       }
-      
+
       await updatedIdea.save();
       res.status(200).json({ message: 'Idea status updated', idea: updatedIdea });
     } catch (error) {
@@ -271,3 +389,5 @@ app.get('/confirmidea', async (req, res) => {
 app.listen(3001, () =>{
     console.log('server is running')
 })
+
+
