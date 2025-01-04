@@ -31,7 +31,7 @@ function SignUpForm() {
     e.preventDefault();
     console.log('Submitting form data:', formData);
     axios
-      .post('http://localhost:3001/register', formData)
+      .post('https://greenfuture-innovation-project.onrender.com/register', formData)
       .then((result) => {
         console.log('Signup successful:', result.data);
         localStorage.setItem('userEmail', email);

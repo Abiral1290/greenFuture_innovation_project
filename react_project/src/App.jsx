@@ -25,7 +25,7 @@ function App() {
 
   const submitIdea = async () => {
     try {
-      await axios.post('http://localhost:3001/submit-idea', {
+      await axios.post('https://greenfuture-innovation-project.onrender.com/submit-idea', {
         email,
         ideaTitle,
         ideaDescription,
@@ -39,7 +39,7 @@ function App() {
 
   const approveIdea = async (index) => {
     try {
-      await axios.post('http://localhost:3001/approve-idea', { ideaIndex: index });
+      await axios.post('https://greenfuture-innovation-project.onrender.com/approve-idea', { ideaIndex: index });
       alert('Idea approved');
       setApprovedIdeas([...approvedIdeas, index]);
     } catch (error) {

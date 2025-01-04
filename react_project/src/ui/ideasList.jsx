@@ -54,7 +54,7 @@ const Ideas = () => {
     // Send FCM Token to the Backend
     // const sendTokenToBackend = async (email, token) => {
     //   try {
-    //     const response = await fetch('http://localhost:3001/api/save-token', {
+    //     const response = await fetch('https://greenfuture-innovation-project.onrender.com/api/save-token', {
     //       method: 'POST',
     //       headers: { 'Content-Type': 'application/json' },
     //       body: JSON.stringify({ email, token }),
@@ -94,7 +94,7 @@ const Ideas = () => {
     //   }
   
     //   try {
-    //     const response = await fetch('http://localhost:3001/api/send-notification', {  // Change port here
+    //     const response = await fetch('https://greenfuture-innovation-project.onrender.com/api/send-notification', {  // Change port here
     //       method: 'POST',
     //       headers: {
     //         'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ const Ideas = () => {
   useEffect(() => {
     const fetchIdeas = async () => {
       try {
-        const response = await fetch('http://localhost:3001/ideas');
+        const response = await fetch('https://greenfuture-innovation-project.onrender.com/ideas');
         if (!response.ok) {
           throw new Error('Failed to fetch ideas');
         }
@@ -170,7 +170,7 @@ const Ideas = () => {
     e.preventDefault();
   
     try {
-      const response = await axios.post('http://localhost:3001/notifications', {
+      const response = await axios.post('https://greenfuture-innovation-project.onrender.com/notifications', {
         email: email,
         message: 'Test notification',
       });
@@ -192,7 +192,7 @@ const Ideas = () => {
       }
 
       // Confirm the idea
-      await axios.post('http://localhost:3001/confirmidea', {
+      await axios.post('https://greenfuture-innovation-project.onrender.com/confirmidea', {
         idea: ideaToConfirm.idea,
         email: ideaToConfirm.email,
       });
@@ -223,7 +223,7 @@ const Ideas = () => {
   //       return;
   //     }
   
-  //     const response = await axios.post('http://localhost:3001/send-notification', {
+  //     const response = await axios.post('https://greenfuture-innovation-project.onrender.com/send-notification', {
   //       email: userEmail,  // Add email here
   //       title: 'New Notification',
   //       body: 'This is a test notification from your Dashboard.',
@@ -247,7 +247,7 @@ const Ideas = () => {
 
     console.log("idea Status id", ideaId)
     try {
-      const response = await axios.patch(`http://localhost:3001/ideas/${ideaId}`, {
+      const response = await axios.patch(`https://greenfuture-innovation-project.onrender.com/ideas/${ideaId}`, {
         ideaConfirmStatus: true, // Set ideaConfirmStatus to true
       });
 
@@ -265,7 +265,7 @@ const Ideas = () => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this idea?')) {
       try {
-        const response = await fetch(`http://localhost:3001/ideas/${id}`, {
+        const response = await fetch(`https://greenfuture-innovation-project.onrender.com/ideas/${id}`, {
           method: 'DELETE',
         });
         if (!response.ok) {

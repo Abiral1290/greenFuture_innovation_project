@@ -13,7 +13,7 @@ const Notifications = () => {
     // Fetch notifications from the backend
     const fetchNotifications = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/notifications/${emails}`);
+        const response = await fetch(`https://greenfuture-innovation-project.onrender.com/notifications/${emails}`);
         const data = await response.json();
         if (response.ok) {
           setNotifications(data);

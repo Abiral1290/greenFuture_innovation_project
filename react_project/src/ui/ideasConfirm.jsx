@@ -17,7 +17,7 @@
 //   // Fetch ideas from the API
 //   const fetchIdeas = async () => {
 //     try {
-//       const response = await fetch('http://localhost:3001/confirmidea');
+//       const response = await fetch('https://greenfuture-innovation-project.onrender.com/confirmidea');
 //       if (!response.ok) {
 //         throw new Error('Failed to fetch ideas');
 //       }
@@ -45,7 +45,7 @@
 //     setIsSubmitting(true);
 
 //     try {
-//       const response = await axios.patch(`http://localhost:3001/confirmidea/${idea._id}`, {
+//       const response = await axios.patch(`https://greenfuture-innovation-project.onrender.com/confirmidea/${idea._id}`, {
 //         voteIncrement: 1, // Increment the vote count by 1
 //       });
 //       if (response.status === 200) {
@@ -140,7 +140,7 @@ const IdeasConfirm = () => {
   // Fetch ideas from the API
   const fetchIdeas = async () => {
     try {
-      const response = await fetch('http://localhost:3001/confirmidea');
+      const response = await fetch('https://greenfuture-innovation-project.onrender.com/confirmidea');
       if (!response.ok) {
         throw new Error('Failed to fetch ideas');
       }
@@ -168,7 +168,7 @@ const IdeasConfirm = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await axios.patch(`http://localhost:3001/confirmidea/${idea._id}`, {
+      const response = await axios.patch(`https://greenfuture-innovation-project.onrender.com/confirmidea/${idea._id}`, {
         voteIncrement: 1, // Increment the vote count by 1
       });
       if (response.status === 200) {
@@ -192,7 +192,7 @@ const IdeasConfirm = () => {
     e.preventDefault();
   
     try {
-      const response = await axios.post('http://localhost:3001/notifications', {
+      const response = await axios.post('https://greenfuture-innovation-project.onrender.com/notifications', {
         email: email,
         message: 'rewarded',
       });
@@ -207,7 +207,7 @@ const IdeasConfirm = () => {
   const handleManagerAction = async (idea) => {
     try {
       // Example action for regional manager
-      const response = await axios.patch(`http://localhost:3001/manageraction/${idea._id}`, {
+      const response = await axios.patch(`https://greenfuture-innovation-project.onrender.com/manageraction/${idea._id}`, {
         actionTaken: true,
       });
       if (response.status === 200) {

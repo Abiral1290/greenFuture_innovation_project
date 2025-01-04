@@ -19,7 +19,7 @@ const Dashboard = () => {
     setIsSubmitting(true);
     
     try {
-      const response = await axios.post('http://localhost:3001/ideas', {
+      const response = await axios.post('https://greenfuture-innovation-project.onrender.com/ideas', {
         idea: inputValue,
         email: emails,
         ideaConfirmStatus: false,
