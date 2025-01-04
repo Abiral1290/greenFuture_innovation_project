@@ -7,8 +7,14 @@ const IdeaConfirm = require('./server/ideasConfirm'); // Adjust the path if need
 const Idea = require('./server/ideasSubmit');// Import the Idea model
 const Notification = require('./server/notification')
 
-//const firestore = new Firestore();
+const mongoDBURI = process.env.MONGODB_URI
+const client = new MongoCLient(mongoDBURI);
 
+
+
+export function getDB(dbName = process.env.DB_NAME){
+  return client.db(dbName);
+}
 
 const cors = require('cors');  // Optional, for handling CORS
 
