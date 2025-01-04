@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from 'react'
 import SignUpForm from './ui/signup'
 import { BrowserRouter as Router, Routes,
@@ -47,10 +48,7 @@ function App() {
     }
   };
 
-
-  return (
-     
-     
+  return (     
     <div>
       <Routes>
         <Route path="/signup"

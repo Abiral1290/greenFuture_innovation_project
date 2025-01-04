@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "postinstall": "chmod -R 755 node_modules/.bin"
+
   },
   "keywords": [],
   "author": "",
@@ -18,7 +20,9 @@
     "firebase": "^11.1.0",
     "firebase-admin": "^13.0.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.9.2",
+    "mongoose": "^8.9.2"
+  },
+  "devDependencies": {
     "nodemon": "^3.1.9"
   }
 }
